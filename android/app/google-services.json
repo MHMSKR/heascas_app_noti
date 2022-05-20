@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "633008177144",
+    "project_id": "hescas-da3e0",
+    "storage_bucket": "hescas-da3e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:633008177144:android:599e5b2a516b655ea2e00d",
+        "android_client_info": {
+          "package_name": "com.hescas_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "633008177144-5obpms6oohml68qb4vi22keqg1djpt6n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRaAq0-2ts6dnLyWJHqPZgRbuAdL674ck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "633008177144-5obpms6oohml68qb4vi22keqg1djpt6n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
