@@ -13,10 +13,9 @@ import background from '../assets/image/background.png'
 import menu from '../assets/icons/menu.png'
 import noti from '../assets/icons/notification.png'
 import logout from '../assets/icons/logout.png'
-import home from '../assets/icons/home.png'
+import img_home from '../assets/icons/home.png'
 import history from '../assets/icons/history_file.png'
 import chat from '../assets/icons/chat.png'
-import user from '../assets/icons/user.png'
 import warning from '../assets/icons/warning.png'
 import ChartScreen from './ChartScreen'
 
@@ -27,16 +26,48 @@ const HomeScreen = ({ navigation }) => {
   const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
   const authContext = useContext(AuthContext)
   const { authAxios } = useContext(AxiosContext)
-  const [users, setUsers] = useState({});
+  const [users, setUsers] = useState({
+    _id: '',
+    user_id: '',
+    fullname: '',
+    email: '',
+    passwd: '',
+    image_profile: '',
+    role: ''
+  });
+  const [home, setHome] = useState({
+    HS_ID: '',
+    info: {
+      address: '',
+      Sub_district: '',
+      district: '',
+      Province: '',
+      Postal_Code: '',
+      CA_Ref: '',
+      type_meter: ''
+    }
+  })
+  const [esp, setEsp] = useState([
+    {
+      esp_id: ''
+    },
+    {
+      esp_id: ''
+    }
+  ])
+  const [profile, setProfile] = useState(null);
   const [loading, setLoding] = useState(true);
 
 
   useEffect(() => {
     const fecthData = async () => {
       try {
-        const response = await authAxios.get('/', { signal: controller.signal});
+        const response = await authAxios.get('/', { signal: controller.signal });
         if (loading) {
-          setUsers(await response.data);
+          setUsers(await response.data.user);
+          setHome(await response.data.info);
+          setEsp(await response.data.esp);
+          setProfile(await response.data.user.image_profile);
           setLoding(false)
         } else {
           setLoding(false)
@@ -47,9 +78,13 @@ const HomeScreen = ({ navigation }) => {
       }
     }
     fecthData();
-    return () => { 
-      setLoding(null)
-      controller.abort(); };
+    return () => {
+      loading
+      users
+      home
+      esp
+      controller.abort();
+    };
   }, [])
 
   if (loading) {
@@ -64,7 +99,7 @@ const HomeScreen = ({ navigation }) => {
         source={background}
         resizeMode='cover'
         style={styles.imageBackground}
-      >  
+      >
         <View style={styles.container}>
           {/* top bar menu */}
           <View style={styles.menu_bar}>
@@ -94,12 +129,12 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.center_user_info}>
               <View style={styles.user_info_left}>
                 <CustomeImage
-                  souceUri={users.user.image_profile}
+                  souceUri={profile == null ? 'undefined' : profile}
                   touchStyle={styles.touch_profile_img}
                   stylesImage={styles.profile_img}
                 />
                 <CustomeTextOutput
-                  text={`Hello, ${users.user.fullname}`}
+                  text={`Hello, ${users.fullname == null ? 'undefined' : users.fullname}`}
                   size={18}
                   family='Medium'
                   color={'#FFFFFF'}
@@ -115,43 +150,43 @@ const HomeScreen = ({ navigation }) => {
               </View>
               <View style={styles.user_info_right}>
                 <CustomeTextOutput
-                  text={"ID : " + users.info.HS_ID}
+                  text={"ID : " + home.HS_ID == null ? 'undefined' : home.HS_ID}
                   size={12}
                   family='Medium'
                   color='#FFFFFF'
                 />
                 <CustomeTextOutput
-                  text={`address: ${users.info.info.address}`}
+                  text={`address: ${home.info.address == null ? 'undefined' : home.info.address}`}
                   size={10}
                   color='#C1DDF8'
                   family='Medium'
                 />
                 <CustomeTextOutput
-                  text={`Sub district : ${users.info.info.Sub_district}`}
+                  text={`Sub district : ${home.info.Sub_district == null ? 'undefined' : home.info.Sub_district}`}
                   size={10}
                   color='#C1DDF8'
                   family='Medium'
                 />
                 <CustomeTextOutput
-                  text={`district : ${users.info.info.district}`}
+                  text={`district : ${home.info.district == null ? 'undefined' : home.info.district}`}
                   size={10}
                   color='#C1DDF8'
                   family='Medium'
                 />
                 <CustomeTextOutput
-                  text={`Province: ${users.info.info.Province} ${users.info.info.Postal_Code}`}
+                  text={`Province: ${home.info.Province == null ? 'undefined' : home.info.Province} ${home.info.Postal_Code == null ? 'undefined' : home.info.Postal_Code}`}
                   size={10}
                   color='#C1DDF8'
                   family='Medium'
                 />
                 <CustomeTextOutput
-                  text={`CA_Ref : ${users.info.info.CA_Ref}`}
+                  text={`CA_Ref : ${home.info.CA_Ref == null ? 'undefined' : home.info.CA_Ref}`}
                   size={10}
                   color='#C1DDF8'
                   family='Medium'
                 />
                 <CustomeTextOutput
-                  text={`type meter: ${users.info.info.type_meter}`}
+                  text={`type meter: ${home.info.type_meter == null ? 'undefined' : home.info.type_meter}`}
                   size={10}
                   color='#C1DDF8'
                   family='Medium'
@@ -164,7 +199,7 @@ const HomeScreen = ({ navigation }) => {
           {/*  buttom menu bar */}
           <View style={styles.foot_menu_bar}>
             <CustomeIcon
-              source={home}
+              source={img_home}
               iconStyle={styles.foot_menu_icon}
               text={"home"}
               textStyle={styles.text_icon}

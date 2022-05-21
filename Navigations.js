@@ -19,9 +19,12 @@ function Navigations() {
     const loadJWT = useCallback(async function () {
         try {
             // get token in secure store
-            const value = AsyncStorage.getItem('token')
-            const token = JSON.parse(value);
+            const value = await AsyncStorage.getItem('token')
+            const token = await JSON.parse(value)
 
+            console.log(token.accessToken || null)
+            console.log(token.refreshToken || null)
+            console.log(token.accessToken !== null)
             // set state on context
             authContaxt.setAuthState({
                 accessToken: token.accessToken || null,
@@ -45,7 +48,6 @@ function Navigations() {
       },[])
 
     useEffect(() => {
-
         loadJWT();
     }, [loadJWT])
 

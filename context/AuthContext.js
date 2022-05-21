@@ -23,23 +23,20 @@ function AuthProvider({ children }) {
         });
     };
 
-        // funtion get access token in AuthState a the time
+    // funtion get access token in AuthState a the time
     const getAccessToken = () => {
         return AuthState.accessToken;
     }
     return (
-        <Provider value={
-            {
-                AuthState,
-                setAuthState,
-                Logout,
-                getAccessToken,
-
-            }
-        }>
+        <Provider value={{
+            AuthState,
+            setAuthState,
+            Logout,
+            getAccessToken,
+        }}>
             {children}
         </Provider>
     )
 }
 
-export {AuthProvider,AuthContext}
+export { AuthProvider, AuthContext }

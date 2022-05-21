@@ -22,6 +22,7 @@ function LoginScreen({ navigation }) {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertTitle, setAlertTitle] = useState('');
 
+  const fcmtoken = AsyncStorage.getItem('fcmtoken')
   const onLogin = () => {
     try {
       setStatus(true)
@@ -34,10 +35,12 @@ function LoginScreen({ navigation }) {
         // get respone from api login
         publicAxios.post('/login', {
           email: username,
-          password: password
+          password: password,
+          fcmtoken:fcmtoken,
         },{ signal: controller.signal}).then((response) => {
           // set context state 
           const { accessToken, refreshToken } = response.data;
+
           authContext.setAuthState({
             accessToken,
             refreshToken,

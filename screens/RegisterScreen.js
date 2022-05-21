@@ -24,8 +24,9 @@ function RegisterScreen({ navigation }) {
 
     const { publicAxios } = useContext(AxiosContext)
 
-    const onRegister = () => {
+    const onRegister = async () => {
         try {
+            const fcmtoken = await AsyncStorage.getItem('fcmtoken');
             // Validate input require 
             if (!(fullname && password && email && repassword)) {
                 setModalVisible(true)
@@ -43,7 +44,8 @@ function RegisterScreen({ navigation }) {
                         fullname: fullname,
                         email: email,
                         password: password,
-                        role: role
+                        role: role,
+                        fcmtoken : fcmtoken
                     },{ signal: controller.signal }).then(function (response) {
                         setModalVisible(true)
                         setAlertType('success')

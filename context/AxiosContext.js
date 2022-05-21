@@ -14,18 +14,19 @@ function AxiosProvider({ children }) {
     // create instance public Api and authenticate Api
     const publicAxios = axios.create({
         baseURL: 'http://hescas.trueddns.com:49590/auth',
-        timeout:5000
+        timeout: 5000
     });
     const authAxios = axios.create({
         baseURL: 'http://hescas.trueddns.com:49590/me',
-        timeout:5000
+        timeout: 5000
     });
 
     // Create AuthAxios instance to use inceptor token
     authAxios.interceptors.request.use(
         (config) => {
-  
-            config.headers['Authorization'] = `Bearer ${authContext.getAccessToken()}`
+            if (!config.headers.Authorization) {
+                config.headers['Authorization'] = `Bearer ${authContext.getAccessToken()}`
+            }
             return config;
         }, (err) => {
             return Promise.reject(err);
@@ -33,35 +34,38 @@ function AxiosProvider({ children }) {
     );
 
     // Refresh Logic use for create refresh token interceptor
-    const  refreshAuthLogic = async (failedRequest) => {
+    const refreshAuthLogic = async (failedRequest) => {
         const data = {
             refreshToken: authContext.AuthState.refreshToken,
-
         };
-        // return axios respone
-        return axios({
+        const options = {
             method: 'POST',
             data,
             url: 'http://hescas.trueddns.com:49590/auth/refresh-token',
-        }).then(
+        }
+        // return axios respone
+        return axios(options).then(
             async function (response) {
-                failedRequest.response.config.headers['Authorization'] = 'Bearer' + response.data.accessToken;
+                failedRequest.response.config.headers['Authorization'] = "Bearer" + response.data.accessToken;
 
                 // set AuthSateContext 
-                authContext.setAuthState({
-                    ...AuthState,
-                    accessToken: response.data.accessToken
-                });
+                authContext.setAuthState((prev)=>({
+                    ...prev,
+                    accessToken:response.data.accessToken
+                }))
+
 
                 // save access token and refresh token to secure store
                 await AsyncStorage.setItem('token',
                     JSON.stringify(
                         {
-                            accessToken: authContext.AuthState.accessToken,
+                            accessToken: response.data.accessToken,
                             refreshToken: authContext.AuthState.refreshToken
                         }
                     )
                 )
+                const d = await AsyncStorage.getItem('token')
+                console.log('>>>>>>>>>>>>>>>>>'+d)
 
                 return Promise.resolve();
             }).catch((err) => {
@@ -71,6 +75,7 @@ function AxiosProvider({ children }) {
                     accessToken: null,
                     refreshToken: null,
                 })
+                throw err
             })
 
     }
